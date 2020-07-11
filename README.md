@@ -6,7 +6,7 @@ solution to the sudoku.
 
 What's a sudoku? Allow Wikipedia to tell you: [Sudoku](https://en.wikipedia.org/wiki/Sudoku)
 
-#Endpoints
+# Endpoints
 
 It listens on the port 4590 for incoming HTTP POST
 operations to the `/verify` endpoint. This is the only implemented endpoint and the only valid verb. 
