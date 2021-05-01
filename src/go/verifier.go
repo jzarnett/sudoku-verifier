@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/http/httputil"
 	"time"
@@ -65,10 +66,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	fmt.Println(string(requestDump))
-	// 50 ms sleep time to simulate actual travel of the data over the internet
+
+	// 25-250 ms sleep time to simulate actual travel of the data over the internet
 	// although it is likely that in practice clients & servers will run inside
 	// the local network of the university. But well.
-	time.Sleep(50 * time.Millisecond)
+	sleepval := 25 + rand.Intn(225)
+	time.Sleep(time.Duration(sleepval) * time.Millisecond)
 
 	if r.Method != "POST" || r.ContentLength == 0 {
 		http.Error(w, "No content received.", 400)
@@ -105,6 +108,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	for {
 		srv := &http.Server{
 			Addr:         ":4590",
