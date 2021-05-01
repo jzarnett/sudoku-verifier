@@ -59,6 +59,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				"so the server does not die:", r)
 		}
 	}()
+	defer r.Body.Close()
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
 		fmt.Println(err)
@@ -105,6 +106,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	for {
+		srv := &http.Server{
+			Addr:         ":4590",
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+		}
+
+		srv.SetKeepAlivesEnabled(false)
 		http.HandleFunc("/verify", handler)
 		println("Preparing to listen on port 4590...")
 		if err := http.ListenAndServe(":4590", nil); err != nil {
@@ -112,6 +120,7 @@ func main() {
 			// students can and do kill servers our primary strategy
 			// is just to ignore it so nobody has to get woken up in the
 			// night to get the server back on its feet.
+			log.Println("Server problem...")
 			log.Println(err)
 		}
 	}
